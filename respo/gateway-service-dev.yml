@@ -1,0 +1,43 @@
+server:
+  port: 80
+
+hosts:
+  user-eureka: http://localhost:8089
+
+spring:
+  output:
+    ansi:
+      enabled: always #多彩log
+ 
+management:
+  security:
+    enabled: false
+
+logging:
+  level:
+    com.rogge: debug
+  file: ./logs/gateway.log
+  root: info
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${hosts.user-eureka}/eureka/
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.application.name}:${server.port}
+
+zuul:
+  routes:
+    user:
+      path: /user/**
+      serviceId: user-module
+      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+    order:
+      path: /order/**
+      serviceId: order-module
+      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+#    command:
+#      path: /command/**
+#      serviceId: command-module
+
